@@ -232,3 +232,162 @@ update();
 
 </body>
 </html>
+function saveGame(){
+
+localStorage.setItem(
+"jjkSave",
+JSON.stringify(player)
+);
+
+log("Game Saved");
+}
+
+function loadGame(){
+
+let save =
+localStorage.getItem("jjkSave");
+
+if(save){
+
+player =
+JSON.parse(save);
+
+update();
+
+log("Game Loaded");
+}
+}
+<button onclick="saveGame()">Save</button>
+
+<button onclick="loadGame()">Load</button>
+inventory:[
+"Slaughter Demon"
+]
+<div class="panel">
+
+<h2>Inventory</h2>
+
+<div id="inventory"></div>
+
+</div>
+document.getElementById(
+"inventory"
+).innerHTML =
+player.inventory.join("<br>");
+equippedTool:null
+function equipTool(name){
+
+player.equippedTool=name;
+
+log(
+"Equipped " + name
+);
+
+update();
+}
+let toolBonus = 0;
+
+if(player.equippedTool){
+
+toolBonus = 10;
+}
+let power =
+player.level +
+player.mastery/10 +
+toolBonus;
+<div class="panel">
+
+<h2>Black Flash</h2>
+
+<div id="direction">
+
+WAIT
+
+</div>
+
+</div>
+let currentDirection = "";
+
+function startFlash(){
+
+let dirs =
+["↑","↓","←","→"];
+
+currentDirection =
+dirs[
+Math.floor(
+Math.random()*4
+)
+];
+
+document.getElementById(
+"direction"
+).innerHTML =
+currentDirection;
+}
+<button onclick="pressDir('↑')">↑</button>
+
+<button onclick="pressDir('↓')">↓</button>
+
+<button onclick="pressDir('←')">←</button>
+
+<button onclick="pressDir('→')">→</button>
+let combo = 0;
+
+function pressDir(dir){
+
+if(dir===currentDirection){
+
+combo++;
+
+player.mastery++;
+
+if(combo>=10){
+
+log("BLACK FLASH!");
+
+player.xp+=100;
+
+combo=0;
+}
+
+startFlash();
+
+}else{
+
+combo=0;
+
+log("Miss");
+}
+}
+const bosses = [
+
+{
+name:"Finger Bearer",
+level:25
+},
+
+{
+name:"Special Grade Curse",
+level:50
+},
+
+{
+name:"Disaster Curse",
+level:100
+}
+
+];
+function checkBoss(){
+
+for(let boss of bosses){
+
+if(player.level===boss.level){
+
+log(
+boss.name +
+" appeared!"
+);
+}
+}
+}
