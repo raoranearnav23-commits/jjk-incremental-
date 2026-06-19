@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>JJK Incremental RPG</title>
+<style>
+body{
+  background:#111;
+  color:white;
+  font-family:Arial;
+  margin:20px;
+}
+.panel{
+  border:1px solid #555;
+  padding:10px;
+  margin:10px;
+}
+button{
+  padding:8px;
+  margin:4px;
+}
+</style>
+</head>
+<body>
+
+<h1>JJK Incremental RPG</h1>
+
+<div class="panel">
+  <h2>Character</h2>
+  <div id="stats"></div>
+</div>
+
+<div class="panel">
+  <button onclick="train()">Train</button>
+  <button onclick="fight()">Fight Curse</button>
+  <button onclick="blackFlashGame()">Black Flash</button>
+</div>
+
+<div class="panel">
+  <h2>Skills</h2>
+  <div id="skills"></div>
+</div>
+
+<div class="panel">
+  <h2>Log</h2>
+  <div id="log"></div>
+</div>
+
+<script>
+
+const clans = [
+"Zenin","Gojo","Kamo","Inumaki","Okkotsu",
+"Dragon","Storm","Thunder","Moon","Void"
+];
+
+const techniques = {
+"Limitless":[
+"Infinity",
+"Blue",
+"Red",
+"Hollow Purple",
+"Unlimited Void"
+],
+
+"Ten Shadows":[
+"Divine Dogs",
+"Nue",
+"Toad",
+"Rabbit Escape",
+"Mahoraga"
+],
+
+"Blood Manipulation":[
+"Blood Bullet",
+"Flowing Red Scale",
+"Piercing Blood",
+"Supernova",
+"Blood Domain"
+]
+};
+
+let techniqueNames = Object.keys(techniques);
+
+let player = {
+level:1,
+xp:0,
+ce:100,
+mastery:0,
+clan: clans[Math.floor(Math.random()*clans.length)],
+technique:
+techniqueNames[
+Math.floor(Math.random()*techniqueNames.length)
+]
+};
+
+function log(text){
+ document.getElementById("log").innerHTML =
+ text + "<br>" +
+ document.getElementById("log").innerHTML;
+}
+
+function update(){
+
+ let unlocked = 1;
+
+ if(player.mastery>=25) unlocked=2;
+ if(player.mastery>=50) unlocked=3;
+ if(player.mastery>=100) unlocked=4;
+ if(player.mastery>=200) unlocked=5;
+
+ document.getElementById("stats").innerHTML=
+ `
+ Level: ${player.level}<br>
+ CE: ${player.ce}<br>
+ Clan: ${player.clan}<br>
+ Technique: ${player.technique}<br>
+ Mastery: ${player.mastery}
+ `;
+
+ document.getElementById("skills").innerHTML=
+ techniques[player.technique]
+ .slice(0,unlocked)
+ .join("<br>");
+}
+
+function levelCheck(){
+
+ while(player.xp >= player.level*20){
+
+   player.xp -= player.level*20;
+
+   player.level++;
+
+   player.ce += 25;
+
+   log("Level Up!");
+ }
+}
+
+function train(){
+
+ player.xp += 5;
+
+ player.mastery++;
+
+ levelCheck();
+
+ update();
+}
+
+function fight(){
+
+ let enemy =
+ player.level +
+ Math.floor(Math.random()*4);
+
+ let power =
+ player.level +
+ player.mastery/10;
+
+ if(power>=enemy){
+
+   player.xp += 15;
+
+   player.mastery += 3;
+
+   log("Defeated Curse.");
+
+ }else{
+
+   player.ce -= 10;
+
+   log("Lost.");
+ }
+
+ levelCheck();
+
+ update();
+}
+
+function blackFlashGame(){
+
+ let directions =
+ ["UP","DOWN","LEFT","RIGHT"];
+
+ let answer =
+ directions[
+ Math.floor(Math.random()*4)
+ ];
+
+ let input =
+ prompt(
+ "Press: " + answer
+ );
+
+ if(
+ input &&
+ input.toUpperCase() === answer
+ ){
+
+   let chance =
+ Math.min(
+ 25,
+ 1 + player.mastery/20
+ );
+
+   let roll =
+ Math.random()*100;
+
+   if(roll < chance){
+
+     log("BLACK FLASH!");
+
+     player.xp += 100;
+
+   }else{
+
+     log("Perfect Hit!");
+   }
+
+ }else{
+
+   log("Missed timing.");
+ }
+
+ update();
+}
+
+update();
+
+</script>
+
+</body>
+</html>
